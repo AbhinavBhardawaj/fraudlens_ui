@@ -13,20 +13,13 @@ import type { PredictionResult } from '@/lib/definitions';
 import { z } from 'genkit';
 
 const PredictionResultSchema = z.object({
-  id: z.string(),
-  prediction: z.enum(['Fraudulent', 'Not Fraudulent']),
-  riskScore: z.number(),
-  V1: z.number(),
-  V2: z.number(),
-  V3: z.number(),
-  V4: z.number(),
-  V5: z.number(),
-  V6: z.number(),
-  V7: z.number(),
-  V8: z.number(),
-  V9: z.number(),
-  V10: z.number(),
-});
+    id: z.string(),
+    prediction: z.enum(['Fraudulent', 'Not Fraudulent']),
+    riskScore: z.number(),
+    Time: z.number().optional(),
+    Amount: z.number().optional(),
+    date: z.string().optional(),
+  });
 
 const SummarizeResultsInputSchema = z.object({
     results: z.array(PredictionResultSchema),

@@ -129,30 +129,64 @@ export async function batchPredictFraud(fileName: string): Promise<{ results?: P
   }
 }
 
-export async function getSummary(results: PredictionResult[]): Promise<{summary?: string; error?: string}> {
+export async function getSummary(
+  results: PredictionResult[]
+): Promise<{ summary?: string; error?: string }> {
   try {
-    const input: SummarizeResultsInput = { results: results.map(r => ({...r})) };
+    const input: SummarizeResultsInput = {
+      results: results.map((r) => ({
+        id: r.id,
+        prediction: r.prediction,
+        riskScore: r.riskScore,
+        Time: Number(r.Time),
+        Amount: Number(r.Amount),
+        date: r.date !== undefined ? String(r.date) : undefined,
+      })),
+    };
     const { summary } = await summarizeResults(input);
     return { summary };
   } catch (e) {
     console.error(e);
-    return { error: 'Failed to generate summary.'}
+    return { error: "Failed to generate summary." };
   }
 }
 
-export async function getAnswer(question: string, results: PredictionResult[]): Promise<{answer?: string; error?: string}> {
-    if (results.length === 0) {
-        return { answer: "I can't answer questions until some transaction data is available. Please run a prediction first." };
-    }
-    if (!question) {
-        return { error: "Please provide a question." };
-    }
-    try {
-        const input: AskOnDataInput = { question, results };
-        const { answer } = await askOnData(input);
-        return { answer };
-    } catch (e) {
-        console.error(e);
-        return { error: 'Failed to get an answer from the AI.' };
-    }
+export async function getAnswer(
+  question: string,
+  results: PredictionResult[]
+): Promise<{ answer?: string; error?: string }> {
+  if (results.length === 0) {
+    return { answer: "I can't answer questions until some transaction data is available. Please run a prediction first." };
+  }
+  if (!question) {
+    return { error: "Please provide a question." };
+  }
+  try {
+    const input: AskOnDataInput = {
+      question,
+      results: results.map((r) => ({
+        id: r.id,
+        prediction: r.prediction,
+        riskScore: r.riskScore,
+        Time: Number(r.Time),
+        Amount: Number(r.Amount),
+        date: r.date !== undefined ? String(r.date) : undefined,
+        V1: Number(r.V1), V2: Number(r.V2), V3: Number(r.V3),
+        V4: Number(r.V4), V5: Number(r.V5), V6: Number(r.V6),
+        V7: Number(r.V7), V8: Number(r.V8), V9: Number(r.V9),
+        V10: Number(r.V10), V11: Number(r.V11), V12: Number(r.V12),
+        V13: Number(r.V13), V14: Number(r.V14), V15: Number(r.V15),
+        V16: Number(r.V16), V17: Number(r.V17), V18: Number(r.V18),
+        V19: Number(r.V19), V20: Number(r.V20), V21: Number(r.V21),
+        V22: Number(r.V22), V23: Number(r.V23), V24: Number(r.V24),
+        V25: Number(r.V25), V26: Number(r.V26), V27: Number(r.V27),
+        V28: Number(r.V28),
+      })),
+    };
+    const { answer } = await askOnData(input);
+    return { answer };
+  } catch (e) {
+    console.error(e);
+    return { error: "Failed to get an answer from the AI." };
+  }
 }
