@@ -13,19 +13,21 @@ export async function predictFraud(data: Transaction): Promise<{ result?: Predic
   }
 
   try {
-    const djangoEndpoint = process.env.NEXT_PUBLIC_DJANGO_API_ENDPOINT;
+    const djangoEndpoint = process.env.DJANGO_API_ENDPOINT;
 
     if (!djangoEndpoint) {
-      throw new Error("The Django API endpoint is not configured. Please set NEXT_PUBLIC_DJANGO_API_ENDPOINT in your environment variables.");
+      throw new Error("The Django API endpoint is not configured. Please set DJANGO_API_ENDPOINT in your environment variables.");
     }
 
-    const response = await fetch(djangoEndpoint, {
+    const response = await fetch(`${djangoEndpoint}/predict/`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify(data)
+      body: JSON.stringify(data),
+      cache: 'no-store',
     });
+    
 
     if (!response.ok) {
        const errorBody = await response.text();
