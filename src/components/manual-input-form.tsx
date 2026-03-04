@@ -19,13 +19,14 @@ import { Input } from "@/components/ui/input";
 import { Skeleton } from "@/components/ui/skeleton";
 
 // Dynamically create the schema for V1 to V28, plus Time and Amount
+// NEW - replace with this
 const vFields = Array.from({ length: 28 }, (_, i) => `V${i + 1}`).reduce((acc, key) => {
-  acc[key] = z.coerce.number().min(-100, "Must be <= 100").max(100, "Must be <= 100");
+  acc[key] = z.coerce.number();
   return acc;
 }, {} as Record<string, z.ZodNumber>);
 
 const formSchema = z.object({
-  Time: z.coerce.number(),
+  Time: z.coerce.number().min(0),
   ...vFields,
   Amount: z.coerce.number().min(0, "Amount must be positive."),
 });
